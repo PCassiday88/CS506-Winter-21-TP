@@ -32,3 +32,11 @@ have complete game minus true AI
 
 5th
 Add the AI
+-removed print statements out of Judge to prevent double printing
+	or messages while checking to see if a move would win
+-created a means to gen random numbers
+-AI first checks to see if there is a move where it can win
+-Next, it checks to see if there is a move that makes the human win
+-Next, it looks for open corners
+-Next, it takes the center
+-Next, it takes any edge
