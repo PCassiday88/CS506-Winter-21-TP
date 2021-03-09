@@ -8,18 +8,22 @@ import random #will be used when the AI is built
 class Board:
     def __init__(self, board):
         self.board = []
-        for square in range(10):
+        for square in range(26):
             square = str(square) 
             board.append(square)
     
     def show_Board(self, board):
-        print('-----------')
-        print(' ' + board[1] + ' | ' + board[2] + ' | ' + board[3])
-        print('-----------')
-        print(' ' + board[4] + ' | ' + board[5] + ' | ' + board[6])
-        print('-----------')
-        print(' ' + board[7] + ' | ' + board[8] + ' | ' + board[9])
-        print('-----------')
+        print('-------------------------')
+        print('  ' + board[1] + ' |  ' + board[2] + ' |  ' + board[3] + ' |  ' + board[4] + ' |  ' + board[5])
+        print('-------------------------')
+        print('  ' + board[6] + ' |  ' + board[7] + ' |  ' + board[8] + ' |  ' + board[9] + ' | ' + board[10])
+        print('-------------------------')
+        print(' ' + board[11] + ' | ' + board[12] + ' | ' + board[13] + ' | ' + board[14] + ' | ' + board[15])
+        print('-------------------------')
+        print(' ' + board[16] + ' | ' + board[17] + ' | ' + board[18] + ' | ' + board[19] + ' | ' + board[20])
+        print('-------------------------')
+        print(' ' + board[21] + ' | ' + board[22] + ' | ' + board[23] + ' | ' + board[24] + ' | ' + board[25])
+        print('-------------------------')
 
 class Human:
     def __init__(self):
@@ -27,7 +31,7 @@ class Human:
 
     def makeMove(self, position, board):
         pos = int(position)
-        if pos >= 1 and pos <= 9:
+        if pos >= 1 and pos <= 25:
             if (board[pos] == 'X' or board[pos] == 'O'): #Check to see if space is occupied 
                 print(" ")   #For appearance 
                 print("You skip your turn for trying to flip a taken square")
@@ -35,7 +39,7 @@ class Human:
                 board[pos] = "X" #Space isn't occupied and the pos is within range
         else: # If you pick a number outside of the range, you are given a chance to pick the pos again
             print("Lets try that again")
-            pos = input("This time pick an open space between 1-9 ")
+            pos = input("This time pick an open space between 1-25 ")
             print(" ")
             self.makeMove(pos) # Calls itself with new pos and game continues
 
@@ -84,7 +88,7 @@ class AI: #This class is controlled by the computer
         #If a win or a block is not available, check to take a corner 
         openCorners = []
         for i in range(len(board)):
-            if board[i] == "1" or board[i] == "3" or board[i] == "7" or board[i] == "9":
+            if board[i] == "1" or board[i] == "5" or board[i] == "21" or board[i] == "25":
                 openCorners.append(i)
             if len(openCorners) > 0:
                 move = self.randomSelection(openCorners)
@@ -93,20 +97,21 @@ class AI: #This class is controlled by the computer
         return
         
         #If a win, block, or corner isn't available, take the center
-        if 5 in board:
-            move = 5
+        if 13 in board:
+            move = 13
             board[move] = "O"
             return
 
         #If none of the above options are available, take ant open edge
+        posEdges = [2,3,4,6,11,16,10,15,20,22,23,24]
         openEdges = []
         for i in range(len(board)):
-            if board[i] == '2' or board[i] == '4' or board[i] == '6' or board[i] == '8':
-                openEdges.append(i)
-            if len(openEdges) > 0:
-                move = (randomSelection(openEdges))
-                board[move] = "O"
-                return 
+            for j in range(len(posEdges)):
+                if board[j] == posEdges[j]:
+                    openEdges.append(j)
+        if len(openEdges) > 0:
+            move = self.randomSelection(openEdges)
+            return
         return
 
 class Judge: #This class will be called to determine is a win or tie has occured 
@@ -118,13 +123,13 @@ class Judge: #This class will be called to determine is a win or tie has occured
         if (a == True):
             return True
         if (a == False):
-            if (movesMade >= 9):
+            if (movesMade >= 25):
                 return False
             else:
                 return False
 
     def checkWinner(self, t, board): # t == player token
-        for win in [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]:
+        for win in [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15],[16,17,18,19,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],[5,10,15,20,25],[1,7,13,19,25],[5,9,13,17,21]]:
             result = True
             for b in win:
                 if board[b] != t:
@@ -134,7 +139,7 @@ class Judge: #This class will be called to determine is a win or tie has occured
         return False
 
 def main():
-    #Any move between 0-9 reflects moves made during game
+    #Any move between 1-25 reflects moves made during game
     # movesMade values of -1 and -2 are used to dictate messages and reset game play
     # before resetting movesMade back to zero and a new game begins with the human
     movesMade = 0 
@@ -147,7 +152,7 @@ def main():
     judge = Judge()
     game.show_Board(board)
 
-    while (movesMade < 9):
+    while (movesMade < 26):
         move = input("Human Move ")
         player1.makeMove(move, board)
         game.show_Board(board)
@@ -157,16 +162,16 @@ def main():
             decision = input("Would you like to play again? <Y/N> ").upper()
             if (decision == "Y"): #If player wants to play again we clean the board
                 movesMade = -1 #Skips the AI move
-                for square in range(10): #Resets board to original values
+                for square in range(26): #Resets board to original values
                     board[square] = str(square)
             else:
                 movesMade = -2
         if (judge.gamePlay("X", movesMade, board) == False):
-            if (movesMade == 9):
+            if (movesMade == 26):
                 print("Tie Game!")
                 decision = input("Would you like to play again? <Y/N> ").upper()
                 if (decision == "Y"): #If player wants to play again we clean the board
-                    for square in range(10):
+                    for square in range(26):
                         board[square] = str(square)
                     movesMade = -1 #To skip the AI move
                 else:
@@ -179,7 +184,7 @@ def main():
             print("Moves Made is: " + str(movesMade))
         print(" ")
         
-        if (movesMade < 9 and movesMade >= 0): #Check to see if there are moves remaining
+        if (movesMade < 25 and movesMade >= 0): #Check to see if there are moves remaining
             player2.makeMove(board, movesMade)
             game.show_Board(board)
             movesMade +=1
@@ -188,15 +193,15 @@ def main():
                 decision = input("Would you like to play again? <Y/N> ").upper()
                 if (decision == "Y"): #If player wants to play again we clean the board
                     movesMade = 0
-                    for square in range(10): #Resets board to original values
+                    for square in range(26): #Resets board to original values
                         board[square] = str(square)
                 else:
                     movesMade = -2
             if (judge.gamePlay("X", movesMade, board) == False):
-                if (movesMade == 9):
+                if (movesMade == 26):
                     decision = input("Would you like to play again? <Y/N> ").upper()
                     if (decision == "Y"): #If player wants to play again we clean the board
-                        for square in range(10):
+                        for square in range(26):
                             board[square] = str(square)
                         movesMade = 0 
                     else:
@@ -212,7 +217,7 @@ def main():
         if (movesMade == -1):
             movesMade = 0 #Resets moves to zero and human starts new game
         if (movesMade == -2):
-            movesMade = 10 # To end the game at the start of the while-loop
+            movesMade = 26 # To end the game at the start of the while-loop
 
 main()
 
