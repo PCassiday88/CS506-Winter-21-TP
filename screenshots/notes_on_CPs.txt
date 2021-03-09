@@ -1,0 +1,34 @@
+1st
+Covered building the basic board and inits
+
+2nd
+Created human and AI classes, changed some scopes
+and can play the game but no winner is declared
+
+3rd
+created judge class that calls a method to check for 
+a winner 
+added additional variables to control game play
+checked for wins and ties
+found some bugs (override square and counter off)
+heavy refactoring
+**Still no fix on override
+**Still requires checks for if the square is taken 
+**Still no true AI
+
+4th
+Fix override and input validation
+	-Fixed override but winner isn't declared until 9 and
+	then tie game is called twice
+	-Fixed above fix
+	First screenshot shows refactor
+	-Second screenshot shows handling pos outside of 1-9
+	-Third shows diag bug error output
+	error was an off by 1 on lines 88 and 90
+have complete game minus true AI
+	-Completed when more func was given to AI move (4th screenshot)
+	-Fixed a bug on exiting the game (5th screenshot)
+	-Refactored checkWinner (6th)
+
+5th
+Add the AI
