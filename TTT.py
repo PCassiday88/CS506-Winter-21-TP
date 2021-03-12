@@ -68,11 +68,19 @@ class AI: #This class is controlled by the computer
         pass
     #Used in selecting randomly when the computer has more than one
     # possible option
-    def randomSelection(self, b):
-        ln = len(b)
-        r = random.randrange(1, ln)
-        board[r] = 'O'
-        return
+    def randomSelection(self, board):
+        ln = len(board)
+        #r = random.randrange(1, ln)
+        while True:
+            r = random.randrange(0, ln)
+            if (board[r] == 'X' or board[r] == ' X' or board[r] == 'O' or board[r] == '0'):
+                print(r)
+                continue
+            else:
+                break
+        return r  
+        
+        
 
     def makeMove(self):    
     #This checks to see if there is a spot where the AI can win and then checks to block a move where the human can win
@@ -81,70 +89,11 @@ class AI: #This class is controlled by the computer
         k = ' '
         AI_judge = Judge()
         posSquares = []
+
+        r = self.randomSelection(board)
+        board[r] = 'O'
                 
-        for j in range(len(board)): #This loop checks for moves that makes the AI win
-            if board[j] == 'X' or board[j] == 'O' or board[j] == '0':
-                posSquares.append(k)
-                continue #Prevents us from considering squares that have a token or are the zero index
-            else: 
-                posSquares.append(j) #filling container with all possible squares not filled with a player token
-                board[j] = "O" #Temp set square
-                if AI_judge.gamePlay("O") == True: #Determine if that would make AI win
-                    return #If true, return because this move makes AI win
-                if AI_judge.gamePlay("O") == False:
-                    board[j] = str(j) #If move will not make AI win, set square to its previous value and keep looking        
-    
-        for i in range(len(board)):
-            #After checking for winning moves, check for moves that the AI needs to block or the human will win
-            if board[i] == 'X' or board[i] == 'O' or board[i] == '0':
-                continue
-            else: 
-                board[i] = "X"
-                if AI_judge.gamePlay("X") == True:
-                    board[i] = "O" #If the move will result in a human win, mark the square with AI token
-                    return
-                if AI_judge.gamePlay("X") == False:
-                    board[i] = str(i)
-                else: #Likely inaccessible code but acts as a catch all if no if statement is entered somehow
-                    board[i] = str(i)
-                    
-        # #If a win or a block is not available, check to take a corner 
-        # openCorners = []
-        # for i in range(len(board)):
-        #     if board[i] == "1" or board[i] == "5" or board[i] == "21" or board[i] == "25":
-        #         openCorners.append(i)
-        #     if len(openCorners) > 0:
-        #         self.randomSelection(openCorners, board)
-        #         # board[move] = "O"
-        #         # return 
-        # return
-        
-        # #If a win, block, or corner isn't available, take the center
-        # if 13 in board:
-        #     move = 13
-        #     board[move] = "O"
-        #     return
 
-        #If none of the above options are available, take ant open edge
-        # posEdges = [2,3,4,6,11,16,10,15,20,22,23,24]
-        # openEdges = []
-        # for i in range(len(posSquares)):
-        #     # for j in range(len(posEdges)):
-        #     if board[j] == ' ':
-        #         continue
-        #     else:
-        #         openEdges.append(j)
-        # if len(openEdges) > 0:
-        #     self.randomSelection(openEdges, board)
-            # board[move] = "O"
-            # return
-        #If no edge is available, take any random open square
-        if len(posSquares) > 0:
-            self.randomSelection(posSquares)
-            # board[move] = "O"
-            # return 
-
-        return
 
 class Judge: #This class will be called to determine is a win or tie has occured 
     def __init__(self):
