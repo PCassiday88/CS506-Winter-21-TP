@@ -1,22 +1,24 @@
 import random #will be used when the AI is built
 
-# board = []
-# for square in range(10):
-#     square = str(square) 
-#     board.append(square)
+board = []
+for square in range(26):
+    square = str(square) 
+    board.append(square)
 
 class Board:
-    def __init__(self, board):
-        self.board = []
-        for square in range(26):
-            square = str(square) 
-            board.append(square)
+    def __init__(self):
+        pass
+        # self.board = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+        # self.board = []
+        # for square in range(26):
+        #     square = str(square) 
+        #     board.append(square)
     
-    def show_Board(self, board):
+    def show_Board(self):
         print('-------------------------')
-        print('  ' + board[ 1 ] + ' |  ' + board[ 2 ] + ' |  ' + board[ 3 ] + ' |  ' + board [ 4 ] + ' |  ' + board[ 5 ])
+        print('  ' + board[1] + ' |  ' + board[2] + ' |  ' + board[3] + ' |  ' + board [4] + ' |  ' + board[5])
         print('-------------------------')
-        print('  ' + board[ 6] + ' |  ' + board[ 7] + ' |  ' + board[ 8] + ' |  ' + board[ 9 ] + ' | ' + board[10])
+        print('  ' + board[6] + ' |  ' + board[7] + ' |  ' + board[8] + ' |  ' + board[9] + ' | ' + board[10])
         print('-------------------------')
         print(' ' + board[11] + ' | ' + board[12] + ' | ' + board[13] + ' | ' + board[14] + ' | ' + board[15])
         print('-------------------------')
@@ -29,7 +31,7 @@ class Human:
     def __init__(self):
         pass
 
-    def makeMove(self, board):
+    def makeMove(self):
         while True:
             turn = input("It's your move, human: ")
             
@@ -42,36 +44,37 @@ class Human:
                         if (board[pos] == 'X' or board[pos] == 'O'): #Check to see if space is occupied 
                             print(" ")   #For appearance 
                             print("You skip your turn for trying to flip a taken square")
+                            break
                         #Space isn't occupied and the pos is within rangebreak
-                        if (pos > 10):# for formatting squares correctly when replacing 2 digit number
-                            board[pos] = " X" 
+                        if (pos <= 10):# for formatting squares correctly when replacing 2 digit number
+                            board[pos] = "X"
+                            break 
                             
                         else:
-                            board[pos] = "X" 
+                            board[pos] = " X" 
                         break
                     except:
                         print("Lets try that again. This time pick an open space between 1-25.")
                         print(" ")
-                        self.makeMove(board)
+                        self.makeMove()
                         break
                 break        
             except ValueError:
                 print("That's not a number, please try again: ")
-        return board
+        return
 
 class AI: #This class is controlled by the computer
     def __init__(self):
         pass
     #Used in selecting randomly when the computer has more than one
     # possible option
-    def randomSelection(self, b, board):
+    def randomSelection(self, b):
         ln = len(b)
         r = random.randrange(1, ln)
-        # return r
         board[r] = 'O'
         return
 
-    def makeMove(self, board, movesMade):    
+    def makeMove(self):    
     #This checks to see if there is a spot where the AI can win and then checks to block a move where the human can win
         i = 0
         j = 0
@@ -86,9 +89,9 @@ class AI: #This class is controlled by the computer
             else: 
                 posSquares.append(j) #filling container with all possible squares not filled with a player token
                 board[j] = "O" #Temp set square
-                if AI_judge.gamePlay("O", movesMade, board) == True: #Determine if that would make AI win
+                if AI_judge.gamePlay("O") == True: #Determine if that would make AI win
                     return #If true, return because this move makes AI win
-                if AI_judge.gamePlay("O", movesMade, board) == False:
+                if AI_judge.gamePlay("O") == False:
                     board[j] = str(j) #If move will not make AI win, set square to its previous value and keep looking        
     
         for i in range(len(board)):
@@ -97,15 +100,14 @@ class AI: #This class is controlled by the computer
                 continue
             else: 
                 board[i] = "X"
-                if AI_judge.gamePlay("X", movesMade, board) == True:
+                if AI_judge.gamePlay("X") == True:
                     board[i] = "O" #If the move will result in a human win, mark the square with AI token
                     return
-                if AI_judge.gamePlay("X", movesMade, board) == False:
+                if AI_judge.gamePlay("X") == False:
                     board[i] = str(i)
                 else: #Likely inaccessible code but acts as a catch all if no if statement is entered somehow
                     board[i] = str(i)
                     
-        print(len(posSquares))
         # #If a win or a block is not available, check to take a corner 
         # openCorners = []
         # for i in range(len(board)):
@@ -138,7 +140,7 @@ class AI: #This class is controlled by the computer
             # return
         #If no edge is available, take any random open square
         if len(posSquares) > 0:
-            self.randomSelection(posSquares, board)
+            self.randomSelection(posSquares)
             # board[move] = "O"
             # return 
 
@@ -148,17 +150,17 @@ class Judge: #This class will be called to determine is a win or tie has occured
     def __init__(self):
         pass
     
-    def gamePlay(self, t, movesMade, board):
-        a = self.checkWinner(t, board)
+    def gamePlay(self, t):
+        a = self.checkWinner(t)
         if (a == True):
             return True
-        if (a == False):
-            if (movesMade >= 25):
-                return False
-            else:
-                return False
+        # if (a == False):
+        #     if (movesMade >= 25):
+        #         return False
+        else:
+            return False
 
-    def checkWinner(self, t, board): # t == player token
+    def checkWinner(self, t): # t == player token
         for win in [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15],[16,17,18,19,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],[5,10,15,20,25],[1,7,13,19,25],[5,9,13,17,21]]:
             result = True
             for b in win:
@@ -176,18 +178,19 @@ def main():
 
 
     #Creating the board and player objects for game play
-    board = []
-    game = Board(board)
+    #board = []
+    game = Board()
     player1 = Human()
     player2 = AI()
     judge = Judge()
-    game.show_Board(board)
+    game.show_Board()
 
     while (movesMade < 26):
-        board = player1.makeMove(board)
-        game.show_Board(board)
+        #game.show_Board(board)
+        player1.makeMove()
+        game.show_Board()
         movesMade += 1
-        if (judge.gamePlay("X", movesMade, board) == True):
+        if (judge.gamePlay("X") == True):
             print("The X's have won!")
             decision = input("Would you like to play again? <Y/N> ").upper()
             if (decision == "Y"): #If player wants to play again we clean the board
@@ -196,7 +199,7 @@ def main():
                     board[square] = str(square)
             else:
                 movesMade = -2
-        if (judge.gamePlay("X", movesMade, board) == False):
+        if (judge.gamePlay("X") == False):
             if (movesMade == 25):
                 print("Tie Game!")
                 decision = input("Would you like to play again? <Y/N> ").upper()
@@ -213,12 +216,13 @@ def main():
         else:
             print("Moves Made is: " + str(movesMade))
         print(" ")
-        
+
+        #Begins the AI move
         if (movesMade < 25 and movesMade >= 0): #Check to see if there are moves remaining
-            player2.makeMove(board, movesMade)
-            game.show_Board(board)
+            player2.makeMove()
+            game.show_Board()
             movesMade +=1
-            if (judge.gamePlay("O", movesMade, board) == True):
+            if (judge.gamePlay("O") == True):
                 print("I have defeated you human!")
                 decision = input("Would you like to play again? <Y/N> ").upper()
                 if (decision == "Y"): #If player wants to play again we clean the board
@@ -227,7 +231,7 @@ def main():
                         board[square] = str(square)
                 else:
                     movesMade = -2
-            if (judge.gamePlay("X", movesMade, board) == False):
+            if (judge.gamePlay("X") == False):
                 if (movesMade == 26):
                     decision = input("Would you like to play again? <Y/N> ").upper()
                     if (decision == "Y"): #If player wants to play again we clean the board
