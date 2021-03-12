@@ -64,29 +64,34 @@ class AI: #This class is controlled by the computer
         pass
     #Used in selecting randomly when the computer has more than one
     # possible option
-    def randomSelection(self, b):
+    def randomSelection(self, b, board):
         ln = len(b)
-        r = random.randrange(0, ln)
-        return b[r]
+        r = random.randrange(1, ln)
+        # return r
+        board[r] = 'O'
+        return
 
     def makeMove(self, board, movesMade):    
     #This checks to see if there is a spot where the AI can win and then checks to block a move where the human can win
         i = 0
         j = 0
+        k = ' '
         AI_judge = Judge()
+        posSquares = []
                 
+        for j in range(len(board)): #This loop checks for moves that makes the AI win
+            if board[j] == 'X' or board[j] == 'O' or board[j] == '0':
+                posSquares.append(k)
+                continue #Prevents us from considering squares that have a token or are the zero index
+            else: 
+                posSquares.append(j) #filling container with all possible squares not filled with a player token
+                board[j] = "O" #Temp set square
+                if AI_judge.gamePlay("O", movesMade, board) == True: #Determine if that would make AI win
+                    return #If true, return because this move makes AI win
+                if AI_judge.gamePlay("O", movesMade, board) == False:
+                    board[j] = str(j) #If move will not make AI win, set square to its previous value and keep looking        
+    
         for i in range(len(board)):
-            if j < len(board): #This allows the for loop to be nested without duplicated efforts
-                for j in range(len(board)): #This loop checks for moves that makes the AI win
-                    if board[j] == 'X' or board[j] == 'O' or board[j] == '0':
-                        continue #Prevents us from considering squares that have a token or are the zero index
-                    else: 
-                        board[j] = "O" #Temp set square
-                        if AI_judge.gamePlay("O", movesMade, board) == True: #Determine if that would make AI win
-                            return #If true, return because this move makes AI win
-                        if AI_judge.gamePlay("O", movesMade, board) == False:
-                            board[j] = str(j) #If move will not make AI win, set square to its previous value and keep looking
-                            continue
             #After checking for winning moves, check for moves that the AI needs to block or the human will win
             if board[i] == 'X' or board[i] == 'O' or board[i] == '0':
                 continue
@@ -100,34 +105,43 @@ class AI: #This class is controlled by the computer
                 else: #Likely inaccessible code but acts as a catch all if no if statement is entered somehow
                     board[i] = str(i)
                     
-
-        #If a win or a block is not available, check to take a corner 
-        openCorners = []
-        for i in range(len(board)):
-            if board[i] == "1" or board[i] == "5" or board[i] == "21" or board[i] == "25":
-                openCorners.append(i)
-            if len(openCorners) > 0:
-                move = self.randomSelection(openCorners)
-                board[move] = "O"
-                return 
-        return
+        print(len(posSquares))
+        # #If a win or a block is not available, check to take a corner 
+        # openCorners = []
+        # for i in range(len(board)):
+        #     if board[i] == "1" or board[i] == "5" or board[i] == "21" or board[i] == "25":
+        #         openCorners.append(i)
+        #     if len(openCorners) > 0:
+        #         self.randomSelection(openCorners, board)
+        #         # board[move] = "O"
+        #         # return 
+        # return
         
-        #If a win, block, or corner isn't available, take the center
-        if 13 in board:
-            move = 13
-            board[move] = "O"
-            return
+        # #If a win, block, or corner isn't available, take the center
+        # if 13 in board:
+        #     move = 13
+        #     board[move] = "O"
+        #     return
 
         #If none of the above options are available, take ant open edge
-        posEdges = [2,3,4,6,11,16,10,15,20,22,23,24]
-        openEdges = []
-        for i in range(len(board)):
-            for j in range(len(posEdges)):
-                if board[j] == posEdges[j]:
-                    openEdges.append(j)
-        if len(openEdges) > 0:
-            move = self.randomSelection(openEdges)
-            return
+        # posEdges = [2,3,4,6,11,16,10,15,20,22,23,24]
+        # openEdges = []
+        # for i in range(len(posSquares)):
+        #     # for j in range(len(posEdges)):
+        #     if board[j] == ' ':
+        #         continue
+        #     else:
+        #         openEdges.append(j)
+        # if len(openEdges) > 0:
+        #     self.randomSelection(openEdges, board)
+            # board[move] = "O"
+            # return
+        #If no edge is available, take any random open square
+        if len(posSquares) > 0:
+            self.randomSelection(posSquares, board)
+            # board[move] = "O"
+            # return 
+
         return
 
 class Judge: #This class will be called to determine is a win or tie has occured 
@@ -160,6 +174,7 @@ def main():
     # before resetting movesMade back to zero and a new game begins with the human
     movesMade = 0 
 
+
     #Creating the board and player objects for game play
     board = []
     game = Board(board)
@@ -182,7 +197,7 @@ def main():
             else:
                 movesMade = -2
         if (judge.gamePlay("X", movesMade, board) == False):
-            if (movesMade == 26):
+            if (movesMade == 25):
                 print("Tie Game!")
                 decision = input("Would you like to play again? <Y/N> ").upper()
                 if (decision == "Y"): #If player wants to play again we clean the board
