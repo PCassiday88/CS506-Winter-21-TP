@@ -14,9 +14,9 @@ class Board:
     
     def show_Board(self, board):
         print('-------------------------')
-        print('  ' + board[1] + ' |  ' + board[2] + ' |  ' + board[3] + ' |  ' + board[4] + ' |  ' + board[5])
+        print('  ' + board[ 1 ] + ' |  ' + board[ 2 ] + ' |  ' + board[ 3 ] + ' |  ' + board [ 4 ] + ' |  ' + board[ 5 ])
         print('-------------------------')
-        print('  ' + board[6] + ' |  ' + board[7] + ' |  ' + board[8] + ' |  ' + board[9] + ' | ' + board[10])
+        print('  ' + board[ 6] + ' |  ' + board[ 7] + ' |  ' + board[ 8] + ' |  ' + board[ 9 ] + ' | ' + board[10])
         print('-------------------------')
         print(' ' + board[11] + ' | ' + board[12] + ' | ' + board[13] + ' | ' + board[14] + ' | ' + board[15])
         print('-------------------------')
@@ -29,19 +29,35 @@ class Human:
     def __init__(self):
         pass
 
-    def makeMove(self, position, board):
-        pos = int(position)
-        if pos >= 1 and pos <= 25:
-            if (board[pos] == 'X' or board[pos] == 'O'): #Check to see if space is occupied 
-                print(" ")   #For appearance 
-                print("You skip your turn for trying to flip a taken square")
-            else:
-                board[pos] = "X" #Space isn't occupied and the pos is within range
-        else: # If you pick a number outside of the range, you are given a chance to pick the pos again
-            print("Lets try that again")
-            pos = input("This time pick an open space between 1-25 ")
-            print(" ")
-            self.makeMove(pos) # Calls itself with new pos and game continues
+    def makeMove(self, board):
+        while True:
+            turn = input("It's your move, human: ")
+            
+            try:
+                pos = int(turn) #check for integer input
+                while True:
+                    try:
+                        pos >= 1 and pos <= 25 #check if integer is a valid board space
+                        # If you pick a number outside of the range, you are given a chance to pick the pos again
+                        if (board[pos] == 'X' or board[pos] == 'O'): #Check to see if space is occupied 
+                            print(" ")   #For appearance 
+                            print("You skip your turn for trying to flip a taken square")
+                        #Space isn't occupied and the pos is within rangebreak
+                        if (pos > 10):# for formatting squares correctly when replacing 2 digit number
+                            board[pos] = " X" 
+                            
+                        else:
+                            board[pos] = "X" 
+                        break
+                    except:
+                        print("Lets try that again. This time pick an open space between 1-25.")
+                        print(" ")
+                        self.makeMove(board)
+                        break
+                break        
+            except ValueError:
+                print("That's not a number, please try again: ")
+        return board
 
 class AI: #This class is controlled by the computer
     def __init__(self):
@@ -153,8 +169,7 @@ def main():
     game.show_Board(board)
 
     while (movesMade < 26):
-        move = input("Human Move ")
-        player1.makeMove(move, board)
+        board = player1.makeMove(board)
         game.show_Board(board)
         movesMade += 1
         if (judge.gamePlay("X", movesMade, board) == True):
