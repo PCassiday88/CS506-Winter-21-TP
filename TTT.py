@@ -5,7 +5,7 @@ two users
 
 import random 
 
-WAYS_TO_WIN = ((1,2,3,4,5),(6,7,8,9,10),(11,12,13,14,15),(16,17,18,19,20),
+WAYS_TO_WIN = ((1,2,3,4,5),(6,7,8,9,10),(11,12,13,14,15),(16,17,18,19,20),(21,22,23,24,25),
                 (1,6,11,16,21),(2,7,12,17,22),(3,8,13,18,23),(4,9,14,19,24),
                 (5,10,15,20,25),(1,7,13,19,25),(5,9,13,17,21))
 board = []
@@ -128,9 +128,10 @@ class Judge:
     def checkWinner(self, t): # t == player token
         """Checks to see if there is a winner"""
         
-        result = True
+        # result = True
 
         for win in WAYS_TO_WIN:
+            result = True
             for b in win:
                 if board[b] != t:
                     result = False
@@ -207,7 +208,7 @@ def main():
                         for square in range(26):
                             board[square] = str(square)
                         movesMade = 0
-                        show_Board()     
+                    
                     else:
                         movesMade = -2 #To prompt the I am done with the game message
         print(" ")
@@ -218,6 +219,7 @@ def main():
             print("I have completed by turn, human. \nMoves Made: " + str(movesMade))
             
         if (movesMade == -1):
+            game.show_Board() 
             movesMade = 0 #Resets moves to zero and human starts new game
         if (movesMade == -2):
             movesMade = 26 # To end the game at the start of the while-loop
