@@ -5,14 +5,9 @@ two users
 
 import random 
 
-WAYS_TO_WIN = [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15],[16,17,18,19,20],
-                [1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],
-                [5,10,15,20,25],[1,7,13,19,25],[5,9,13,17,21]] 
-
-
-""" ((1,2,3,4,5),(6,7,8,9,10),(11,12,13,14,15),(16,17,18,19,20),
-                (1,6,11,16,21),(2,7,12,17,22),(3,8,13,18,23),(4,9,14,19,24),
-                (5,10,15,20,25),(1,7,13,19,25),(5,9,13,17,21)) """
+WAYS_TO_WIN = ((1,2,3,4,5),(6,7,8,9,10),(11,12,13,14,15),(16,17,18,19,20),
+              (1,6,11,16,21),(2,7,12,17,22),(3,8,13,18,23),(4,9,14,19,24),
+              (5,10,15,20,25),(1,7,13,19,25),(5,9,13,17,21))
 board = []
 for square in range(26):
     square = str(square) 
@@ -66,8 +61,6 @@ class Human:
         pass
 
     def makeMove(self):
-        """Accepts and checks the human's move"""
-
         while True:
             turn = input("\nIt's your move, human: ")
             
@@ -113,6 +106,8 @@ class AI: #This class is controlled by the computer
             r = random.randrange(0, ln)
         return r  
         
+        
+
     def makeMove(self):    
         """Selects the computer's move. There was a lot of AI attempted here and 
         shown in other submission material, but unfortunately, we had to reduce this
@@ -127,26 +122,33 @@ class Judge:
 
     def __init__(self):
         pass
+    
+    """ def gamePlay(self, t):
+        a = self.checkWinner(t)
+        if (a == True):
+            return True
+        else:
+            return False """
 
     def checkWinner(self, t): # t == player token
-        """Checks to see if there is a winner"""
-        
-        result = True
-
-        for win in WAYS_TO_WIN:
+        for win in WAYS_To_WIN:
+            result = True
             for b in win:
-                if board[b] != t or board[b] != (" "+t):
+                if board[b] != t:
                     result = False
             if result == True:
                 return True
         return False
 
 def main():
-    """ Any move between 1-25 reflects moves made during game
-    movesMade values of -1 and -2 are used to dictate messages and reset game play
-    before resetting movesMade back to zero and a new game begins with the human"""
+    # Any move between 1-25 reflects moves made during game
+    # movesMade values of -1 and -2 are used to dictate messages and reset game play
+    # before resetting movesMade back to zero and a new game begins with the human
     movesMade = 0 
 
+
+    #Creating the board and player objects for game play
+    #board = []
     game = Board()
     player1 = Human()
     player2 = AI()
@@ -156,13 +158,11 @@ def main():
     game.show_Board()
 
     while (movesMade < 26):
-        
+        #game.show_Board(board)
         player1.makeMove()
         game.show_Board()
-        
         movesMade += 1
-
-        if (judge.checkWinner("X") == True): #or (judge.checkWinner(" X") == True)):
+        if (judge.checkWinner("X") == True):
             print("\nUnbelievable! Somehow you have beat me...")
             decision = input("\nWould you like to play again? <Y/N> ").upper()
             if (decision == "Y"): #If player wants to play again we clean the board
@@ -171,7 +171,6 @@ def main():
                     board[square] = str(square)
             else:
                 movesMade = -2
-
         if (judge.checkWinner("X") == False):
             if (movesMade == 25):
                 print("Tie Game!")
@@ -187,14 +186,15 @@ def main():
             if (movesMade == -2):
                 print("Thank you! Come play again weak human!") #Done with the game message
         else:
-            print("Moves Made is: " + str(movesMade), "\n")
+            print("Moves Made is: " + str(movesMade))
+        print(" ")
 
         #Begins the AI move
         if (movesMade < 25 and movesMade >= 0): #Check to see if there are moves remaining
             player2.makeMove()
             game.show_Board()
             movesMade +=1
-            if (judge.checkWinner("O") == True):
+            if (judge.gamePlay("O") == True):
                 print("I have defeated you human!")
                 decision = input("Would you like to play again? <Y/N> ").upper()
                 if (decision == "Y"): #If player wants to play again we clean the board
@@ -203,14 +203,13 @@ def main():
                         board[square] = str(square)
                 else:
                     movesMade = -2
-            if (judge.checkWinner("X") == False):
+            if (judge.gamePlay("X") == False):
                 if (movesMade == 26):
                     decision = input("Would you like to play again? <Y/N> ").upper()
                     if (decision == "Y"): #If player wants to play again we clean the board
                         for square in range(26):
                             board[square] = str(square)
-                        movesMade = 0
-                        show_Board()     
+                        movesMade = 0 
                     else:
                         movesMade = -2 #To prompt the I am done with the game message
         print(" ")
@@ -218,7 +217,8 @@ def main():
             if (movesMade == -2):
                 print("Thank you! Come play again weak human!") #Done with the game message
         else:
-            print("I have completed by turn, human. \nMoves Made: " + str(movesMade))
+            print("AI Moves Made: " + str(movesMade))
+        print(" ")
             
         if (movesMade == -1):
             movesMade = 0 #Resets moves to zero and human starts new game
