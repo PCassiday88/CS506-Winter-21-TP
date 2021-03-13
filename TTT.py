@@ -5,14 +5,9 @@ two users
 
 import random 
 
-WAYS_TO_WIN = [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15],[16,17,18,19,20],
-                [1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],
-                [5,10,15,20,25],[1,7,13,19,25],[5,9,13,17,21]] 
-
-
-""" ((1,2,3,4,5),(6,7,8,9,10),(11,12,13,14,15),(16,17,18,19,20),
+WAYS_TO_WIN = ((1,2,3,4,5),(6,7,8,9,10),(11,12,13,14,15),(16,17,18,19,20),
                 (1,6,11,16,21),(2,7,12,17,22),(3,8,13,18,23),(4,9,14,19,24),
-                (5,10,15,20,25),(1,7,13,19,25),(5,9,13,17,21)) """
+                (5,10,15,20,25),(1,7,13,19,25),(5,9,13,17,21))
 board = []
 for square in range(26):
     square = str(square) 
@@ -80,13 +75,15 @@ class Human:
                         if (board[pos] == 'X' or board[pos] == 'O'): #Check to see if space is occupied 
                             print("\nYou skip your turn for trying to flip a taken square")
                             break
+
+                        
+                        # #if (pos <= 10):# for formatting squares correctly when replacing 2 digit number
+                        #    board[pos] = "X"
+                        #    break 
+                        #     """
                         #Space isn't occupied and the pos is within rangebreak
-                        if (pos <= 10):# for formatting squares correctly when replacing 2 digit number
-                            board[pos] = "X"
-                            break 
-                            
                         else:
-                            board[pos] = " X" 
+                            board[pos] = "X" 
                         break
                     except:
                         print("Lets try that again. This time pick an open space between 1-25.\n")
@@ -135,7 +132,7 @@ class Judge:
 
         for win in WAYS_TO_WIN:
             for b in win:
-                if board[b] != t or board[b] != (" "+t):
+                if board[b] != t:
                     result = False
             if result == True:
                 return True
@@ -162,7 +159,7 @@ def main():
         
         movesMade += 1
 
-        if (judge.checkWinner("X") == True): #or (judge.checkWinner(" X") == True)):
+        if (judge.checkWinner("X") == True):
             print("\nUnbelievable! Somehow you have beat me...")
             decision = input("\nWould you like to play again? <Y/N> ").upper()
             if (decision == "Y"): #If player wants to play again we clean the board
